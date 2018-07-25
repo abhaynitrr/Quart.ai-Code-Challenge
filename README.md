@@ -14,6 +14,7 @@ Assumptions:
 		5. each rule should contain a valid signal ID.
 
 
+
 Discussion Questions:
 1. Briefly describe the conceptual approach you chose! What are the trade-offs?
 So let's suppose there are total N rules and M signals,
@@ -29,6 +30,7 @@ So let's suppose there are total N rules and M signals,
 
 3. If you had more time, what improvements would you make, and in what order of priority?
 	1. With more time I would have used Bucketing and hashing style where instead of taking all the signals we would take only those which matches with the current signal ID and in that case time complexity will surely reduced from O(N * M) to O(N + M)
+
 
 
 Steps to Run:
