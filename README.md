@@ -1,7 +1,5 @@
 # Quart.ai-Code-Challenge
 
-# Quart.ai-Code-Challenge
-
 Assumptions:
 1. For making cross platform compatible, I am using "JSONData.js" file for json test cases and "Rule.js" file for input rules.
 2. In JSONData.js file please make sure, don't rename/remove the variable "JSONInput" and use the same file for other test cases too.
