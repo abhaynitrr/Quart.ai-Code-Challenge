@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Code Challenge</title>
+    <style>
+        .container {
+            width: 700px;
+            height: 500px;
+            border: 2px solid darkcyan;
+            margin: auto;
+            overflow-y: auto;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        .btn-test {
+            box-shadow: 1px 1px 1px black;
+            width: 100px;
+            text-align: center;
+            background: darkcyan;
+            color: whitesmoke;
+            padding: 5px;
+            border-radius: 5px;
+            margin: 5px auto;
+            cursor: pointer;
+        }
+
+        .rule-header {
+            background: lightcyan;
+            font-weight: bold;
+            padding: 4px;
+        }
+
+        .rule-signal > ul {
+            margin: 0px;
+        }
+
+        .rule-signal {
+            background: lightgrey;
+            padding: 5px 0px;
+        }
+
+        .time-stamp {
+            width: 300px;
+            text-align: center;
+            margin: 10px auto;
+            font-weight: bold;
+        }
+    </style>
+    <script src="jQuery.js"></script>
+    <script src="JSONData.js"></script>
+    <script src="Rule.js"></script>
+
+</head>
+<body>
+    <div class="container">
+
+    </div>
+
+    <div class="btn-test" onclick="runTest()">Test Signals</div>
+    <div class="time-stamp"></div>
+
+    <script type="text/javascript" defer="defer">
+
+        function runTest() {
+            $(".container").empty();
+            let i = 0;
+            let final = [];
+
+            let startTime = new Date().valueOf();
+            for (i = 0; i < rules.length; i++) {
+                //validate the rule
+                let _rule = rules[i].toUpperCase();
+                let _case = validateRule(_rule);
+
+                //search for violation iff rule is validated
+                validateSignal(_case, _rule);
+
+                //display the violated rule
+                let currentheader = "<div class='rule-header'>" + rules[i] + "</div>";
+                $(".container").append($(currentheader));
+                let currentSignals = $("<div class='rule-signal'></div>");
+                $(".container").append($(currentSignals));
+                let ullis = "<ul>";
+                for (var k = 0; k < final.length; k++) {
+                    ullis += "<li>";
+                    ullis += (final[k].signal + " " + final[k].value_type + " " + final[k].value);
+                    ullis += "</li>";
+                }
+                ullis += "</ul>";
+                $(currentSignals).append(ullis);
+                final.length = 0;
+            }
+
+
+            function validateRule(rule) {
+                //cases: SNBG, SNBL, SNB, SBG, SBL, SB
+                let _case = '';
+                let _auth = true;
+                if (rule.indexOf('SHOULD NOT') > -1 || rule.indexOf('SHOULD NEVER') > -1)
+                    _case += 'SNB';
+                else if (rule.indexOf('SHOULD') > -1)
+                    _case += 'SB';
+                else
+                    return false;
+
+                if (rule.indexOf(' RISE') > -1 || rule.indexOf(' ABOVE') > -1 || rule.indexOf(' MORE') > -1 || rule.indexOf(' GREATER') > -1 || rule.indexOf(' BIG') > -1 || rule.indexOf(' AFTER') > -1)
+                    _case += 'G';
+                else if (rule.indexOf(' FALL') > -1 || rule.indexOf('LOW') > -1 || rule.indexOf(' LESS') > -1 || rule.indexOf(' BEFORE') > -1)
+                    _case += 'L'
+                else
+                    _case += '';
+
+                return _case;
+            }
+
+            function validateSignal(_case, _rule) {
+                let signalID = _rule.split(' ')[0];
+                let value = _rule.split(' ')[_rule.split(' ').length - 1];
+                if (value.indexOf(':') > -1)
+                    value = _rule.split(' ')[_rule.split(' ').length - 2] + " " + _rule.split(' ')[_rule.split(' ').length - 1];
+                let type = '';
+
+                if (!isNaN(value))
+                    type = 'Integer';
+                else if (new Date(value).toString() !== "Invalid Date")
+                    type = 'Datetime';
+                else {
+                    type = 'String';
+                    if (["PRESENT", "PAST", "FUTURE"].indexOf(value) > -1)
+                        type = 'Datetime';
+                }
+
+                iterateSignal(_case, signalID, value, type);
+            }
+
+
+            function iterateSignal(_case, _signalid, _value, _type) {
+                //cases: SNBG, SNBL, SNB, SBG, SBL, SB
+                let i = 0;
+                for (i = 0; i < JSONInput.length; i++) {
+                    if (JSONInput[i].signal == _signalid && JSONInput[i].value_type == _type) {
+                        switch (_case) {
+                            case 'SNBG':
+                                if (_type == 'Integer') {
+                                    if (parseFloat(JSONInput[i].value) > parseFloat(_value))
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'Datetime') {
+                                    if (new Date(JSONInput[i].value).valueOf() > new Date(_value).valueOf())
+                                        final.push(JSONInput[i]);
+                                }
+                                break;
+                            case 'SNBL':
+                                if (_type == 'Integer') {
+                                    if (parseFloat(JSONInput[i].value) < parseFloat(_value))
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'Datetime') {
+                                    if (new Date(JSONInput[i].value).valueOf() < new Date(_value).valueOf())
+                                        final.push(JSONInput[i]);
+                                }
+                                break;
+                            case 'SBG':
+                                if (_type == 'Integer') {
+                                    if (parseFloat(JSONInput[i].value) <= parseFloat(_value))
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'Datetime') {
+                                    if (new Date(JSONInput[i].value).valueOf() <= new Date(_value).valueOf())
+                                        final.push(JSONInput[i]);
+                                }
+                                break;
+                            case 'SBL':
+                                if (_type == 'Integer') {
+                                    if (parseFloat(JSONInput[i].value) >= parseFloat(_value))
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'Datetime') {
+                                    if (new Date(JSONInput[i].value).valueOf() >= new Date(_value).valueOf())
+                                        final.push(JSONInput[i]);
+                                }
+                                break;
+                            case 'SNB':
+                                if (_type == 'Integer') {
+                                    if (parseFloat(JSONInput[i].value) === parseFloat(_value))
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'String') {
+                                    if (JSONInput[i].value.toString() === _value.toString())
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'Datetime') {
+                                    if (_value == "FUTURE" && (new Date(JSONInput[i].value).valueOf() > new Date().valueOf()))
+                                        final.push(JSONInput[i]);
+                                    if (_value == "PAST" && (new Date(JSONInput[i].value).valueOf() < new Date().valueOf()))
+                                        final.push(JSONInput[i]);
+                                    if (_value == "PRESENT" && (new Date(JSONInput[i].value).valueOf() === new Date().valueOf()))
+                                        final.push(JSONInput[i]);
+                                }
+                                break;
+                            case 'SB':
+                                if (_type == 'Integer') {
+                                    if (parseFloat(JSONInput[i].value) !== parseFloat(_value))
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'String') {
+                                    if (JSONInput[i].value.toString() !== _value.toString())
+                                        final.push(JSONInput[i]);
+                                }
+                                if (_type == 'Datetime') {
+                                    if (_value == "FUTURE" && (new Date(JSONInput[i].value).valueOf() <= new Date().valueOf()))
+                                        final.push(JSONInput[i]);
+                                    if (_value == "PAST" && (new Date(JSONInput[i].value).valueOf() >= new Date().valueOf()))
+                                        final.push(JSONInput[i]);
+                                    if (_value == "PRESENT" && (new Date(JSONInput[i].value).valueOf() !== new Date().valueOf()))
+                                        final.push(JSONInput[i]);
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            let stopTime = new Date().valueOf();
+            $('.time-stamp').html("Execution Time: " + (stopTime - startTime) + " milliseconds");
+        }
+
+
+
+    </script>
+</body>
+</html>
