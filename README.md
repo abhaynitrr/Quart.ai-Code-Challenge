@@ -34,7 +34,8 @@ So let's suppose there are total N rules and M signals,
 
 
 Steps to Run:
-1. Place the root folder in any of the working directory.
-2. Run the index.html file with any web browser (ex. Google chrome).
-3. For code checking purpose, runTest() is the main function in the code.
+1. Take a clone of this repository on your desktop and then extract the files.
+2. Place the root folder in any of the working directory.
+3. Run the index.html file with any web browser (ex. Google chrome).
+4. For code checking purpose, runTest() is the main function in the code.
 
