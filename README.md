@@ -1,11 +1,13 @@
 # Quart.ai-Code-Challenge
 
+# Quart.ai-Code-Challenge
+
 Assumptions:
 1. For making cross platform compatible, I am using "JSONData.js" file for json test cases and "Rule.js" file for input rules.
 2. In JSONData.js file please make sure, don't rename/remove the variable "JSONInput" and use the same file for other test cases too.
 3. In Rule.js file please make sure the following points,
 	1. Don't remove/rename the variable "rules".
-	2. All the rules should inserted as comma seperated strings like ["ATL1 value should not be HIGH", "ATL2 value should not be HIGH"].
+	2. All the rules should be inserted as comma separated strings like ["ATL1 value should not be HIGH", "ATL2 value should not be HIGH"].
 	3. For an valid input rule -
 		1. each rule should use only one of these ("SHOULD","SHOULD NOT","SHOULD NEVER") to make positive/negative statement.
 		2. for greater than condition, each rule should use only one of these ("RISE","ABOVE","MORE","GREATER","BIG","AFTER").
@@ -24,14 +26,15 @@ So let's suppose there are total N rules and M signals,
 	5. at the end all the violated signals with respective rules will be displayed.
 
 2. What's the runtime performance? What is the complexity? Where are the bottlenecks?
-with the current approch time complexity is directly realted to the number of rules and signals, i.e, O(N * M).
-bottleneck is only for the worst cases when for a particular rule there is no signal which violates the current rule.
+	1. With the current approach time complexity is directly related to the number of rules and signals, i.e., O(N * M).
+	2. bottleneck is only for the worst cases when for a particular rule there is no signal which violates the current rule.
 
 3. If you had more time, what improvements would you make, and in what order of priority?
-With more time I would have used Bucketing and hashing style where instead of taking all the signals we would take only those which matches with the current signal ID.and in that case time complexity will surely reduced from O(N * M) to O(N + M)
+	1. With more time I would have used Bucketing and hashing style where instead of taking all the signals we would take only those which matches with the current signal ID and in that case time complexity will surely reduced from O(N * M) to O(N + M)
 
 
 Steps to Run:
 1. Place the root folder in any of the working directory.
-2. Run the index.html file with any web browser (ex. Google chorme).
+2. Run the index.html file with any web browser (ex. Google chrome).
 3. For code checking purpose, runTest() is the main function in the code.
+
